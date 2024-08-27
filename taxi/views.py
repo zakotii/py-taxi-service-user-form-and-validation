@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.views import View
 from .models import Driver, Car, Manufacturer
 from .forms import DriverForm, DriverLicenseUpdateForm, CarForm
 
@@ -108,11 +108,11 @@ class DriverLicenseUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_url = reverse_lazy("taxi:driver-list")
 
 
-@login_required
-def assign_me_to_car(request, pk):
-    car = get_object_or_404(Car, pk=pk)
-    if car.is_driver_assigned(request.user):
-        car.remove_driver(request.user)
-    else:
-        car.add_driver(request.user)
-    return redirect("taxi:car-detail", pk=pk)
+class AssignMeToCarView(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        car = get_object_or_404(Car, pk=pk)
+        if car.is_driver_assigned(request.user):
+            car.remove_driver(request.user)
+        else:
+            car.add_driver(request.user)
+        return redirect("taxi:car-detail", pk=pk)
