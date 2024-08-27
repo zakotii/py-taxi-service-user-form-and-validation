@@ -12,7 +12,8 @@ class LicenseNumberValidationMixin:
             or not license_number[3:].isdigit()
         ):
             raise forms.ValidationError(
-                "License number must consist of 3 uppercase letters followed by 5 digits."
+                "License number must consist"
+                " of 3 uppercase letters followed by 5 digits."
             )
         return license_number
 
